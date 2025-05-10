@@ -1,0 +1,29 @@
+////
+/// @group config
+/// @author cgoern
+////
+
+// ==========================================================================
+// Variables
+// ==========================================================================
+
+/// The default namespace for CSS custom properties.
+///
+/// @since 1.0.0
+///
+/// @type string
+$namespace: 'lib-colors' !default;
+
+/// Whether colors should alter when entering system dark mode.
+///
+/// @since 1.0.0
+///
+/// @type bool
+$useDarkMode: true !default;
+
+/// Whether colors should alter when display & browser supports Display P3 color space.
+///
+/// @since 1.0.0
+///
+/// @type bool
+$useDisplayP3: true !default;

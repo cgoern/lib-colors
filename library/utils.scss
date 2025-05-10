@@ -1,0 +1,162 @@
+////
+/// @group utils
+/// @author cgoern
+////
+
+// ==========================================================================
+// Modules
+// ==========================================================================
+
+@use 'sass:color';
+@use 'sass:map';
+@use 'sass:math';
+@use 'sass:meta';
+@use './config';
+
+// ==========================================================================
+// Functions
+// ==========================================================================
+
+/// Convert an absolute RGB channel value to a relative decimal value.
+///
+/// @since 1.0.0
+///
+/// @param {number} $channelValue - Absolute RGB channel value `(0..255)`.
+/// @return {number}
+@function calcColorChannelRelative($channelValue) {
+  @if meta.type-of($channelValue) != 'number' {
+    @error 'Given channel value #{$channelValue} is not a number.';
+  } @else if $channelValue < 0 {
+    @error 'Given channel value #{$channelValue} is not larger or equal than 0.';
+  } @else if $channelValue > 255 {
+    @error 'Given channel value #{$channelValue} is not smaller or equal than 255.';
+  } @else {
+    @return math.div(math.round(math.div($channelValue, 255) * 1000), 1000);
+  }
+}
+
+/// Convert an relative decimal RGB channel value to an absolute value.
+///
+/// @since 1.0.0
+///
+/// @param {number} $channelValue - Relative RGB channel value `(0..1)`.
+/// @return {number}
+@function calcColorChannelAbsolute($channelValue) {
+  @if meta.type-of($channelValue) != 'number' {
+    @error 'Given channel value #{$channelValue} is not a number.';
+  } @else if $channelValue < 0 {
+    @error 'Given channel value #{$channelValue} is not larger or equal than 0.';
+  } @else if $channelValue > 1 {
+    @error 'Given channel value #{$channelValue} is not smaller or equal than 1.';
+  } @else {
+    @return math.round($channelValue * 255);
+  }
+}
+
+/// Convert a color to a Display P3 color function.
+///
+/// @since 1.0.0
+///
+/// @param {color} $color - A color.
+/// @return {string}
+@function convertColorDisplayP3($color) {
+  @if meta.type-of($color) != 'color' {
+    @error 'Given color #{$color} is not a color.';
+  } @else {
+    $red: calcColorChannelRelative(color.channel($color, 'red'));
+    $green: calcColorChannelRelative(color.channel($color, 'green'));
+    $blue: calcColorChannelRelative(color.channel($color, 'blue'));
+    $alpha: color.alpha($color) * 100%;
+
+    @return 'color(display-p3 #{$red} #{$green} #{$blue} / #{$alpha})';
+  }
+}
+
+// ==========================================================================
+// Mixins
+// ==========================================================================
+
+/// Declare a named color as a CSS custom property.
+///
+/// @since 1.0.0
+///
+/// @param {string} $name - The color name.
+/// @param {color} $value - The color value.
+/// @param {string} $namespace [config.$namespace] - The namespace for the CSS custom property.
+/// @param {bool} $displayP3 [false] - Whether the given color should be converted to a Display P3 color function.
+/// @output CSS custom property
+@mixin color($name, $value, $displayP3: false) {
+  @if meta.type-of($name) != 'string' {
+    @error 'Given name #{$name} is not a string.';
+  } @else if meta.type-of($value) != 'color' {
+    @error 'Given value #{$value} is not a color.';
+  } @else {
+    $value: if($displayP3 == true, convertColorDisplayP3($value), $value);
+
+    & {
+      --#{config.$namespace}-#{$name}: #{$value};
+    }
+  }
+}
+
+/// Declare a set of named colors as CSS custom proprties.
+///
+/// @since 1.0.0
+///
+/// @param {map} $palette - The color palette.
+/// @param {bool} $useDisplayP3 [config.$useDisplayP3] - Whether colors should alter when display & browser supports Display P3 color space.
+/// @output CSS selector with custom properties
+@mixin colors($colors, $useDisplayP3: config.$useDisplayP3) {
+  @if meta.type-of($colors) != 'map' {
+    @error 'Given palette #{$palette} is not a map.';
+  } @else if meta.type-of($useDisplayP3) != 'bool' {
+    @error 'Given useDisplayP3 #{$useDisplayP3} is not a boolean.';
+  } @else {
+    @each $name, $value in $colors {
+      @include color($name, $value);
+    }
+
+    @if $useDisplayP3 {
+      @include mediaDisplayP3() {
+        @each $name, $value in $colors {
+          @include color($name, $value, true);
+        }
+      }
+    }
+  }
+}
+
+/// Feature query for Display P3 supported browser.
+///
+/// @since 1.0.0
+///
+/// @output CSS feature query
+@mixin supportsDisplayP3 {
+  @supports (color: color(display-p3 1 1 1)) {
+    @content;
+  }
+}
+
+/// Media query for Display P3 capable device and supported browser.
+///
+/// @since 1.0.0
+///
+/// @output CSS media query
+@mixin mediaDisplayP3 {
+  @media (color-gamut: p3) {
+    @include supportsDisplayP3() {
+      @content;
+    }
+  }
+}
+
+/// Media query for dark system appearance.
+///
+/// @since 1.0.0
+///
+/// @output CSS media query
+@mixin mediaDarkMode {
+  @media (prefers-color-scheme: dark) {
+    @content;
+  }
+}

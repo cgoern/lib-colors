@@ -1,0 +1,34 @@
+{
+  "name": "@cgoern/lib-colors",
+  "version": "0.0.0",
+  "description": "Color tooling and core colors library.",
+  "license": "MIT",
+  "author": "cgoern",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cgoern/lib-colors.git"
+  },
+  "files": [
+    "_black.scss",
+    "_core.scss",
+    "_gray.scss",
+    "_white.scss",
+    "index.scss",
+    "library/"
+  ],
+  "scripts": {
+    "test:dev": "node_modules/.bin/sass tests/style.scss tests/style.css --no-source-map --load-path=./",
+    "test:prod": "node_modules/.bin/sass tests/style.scss tests/style.css --style=compressed --no-source-map --load-path=./",
+    "test:watch": "node_modules/.bin/sass tests/style.scss tests/style.css --watch --no-source-map --load-path=./",
+    "format": "prettier . --write"
+  },
+  "prettier": {
+    "printWidth": 100,
+    "semi": false,
+    "singleQuote": true
+  },
+  "devDependencies": {
+    "prettier": "^3.5.3",
+    "sass": "^1.87.0"
+  }
+}
