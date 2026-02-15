@@ -28,7 +28,7 @@
     "singleQuote": true
   },
   "devDependencies": {
-    "prettier": "^3.5.3",
-    "sass": "^1.87.0"
+    "prettier": "^3.8.1",
+    "sass": "^1.97.3"
   }
 }

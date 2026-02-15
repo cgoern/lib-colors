@@ -13,19 +13,25 @@ jobs:
       packages: write
     steps:
       # Publish to npm package registry
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v4
         with:
-          node-version: '22.x'
+          version: 10.24.0
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24.x'
           registry-url: 'https://registry.npmjs.org'
-      - run: npm publish --access public
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm publish --access public --no-git-checks
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       # Publish to GitHub Packages
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
           registry-url: 'https://npm.pkg.github.com'
           scope: '@cgoern'
-      - run: npm publish
+          cache: 'pnpm'
+      - run: pnpm publish --no-git-checks
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

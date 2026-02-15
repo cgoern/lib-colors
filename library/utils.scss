@@ -91,7 +91,9 @@
   } @else if meta.type-of($value) != 'color' {
     @error 'Given value #{$value} is not a color.';
   } @else {
-    $value: if($displayP3 == true, convertColorDisplayP3($value), $value);
+    $value: if(
+      sass($displayP3 == true): convertColorDisplayP3($value) ; else: $value,
+    );
 
     & {
       --#{config.$namespace}-#{$name}: #{$value};
