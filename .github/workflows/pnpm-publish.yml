@@ -18,14 +18,13 @@ jobs:
     steps:
       # Publish to npm package registry
       - uses: actions/checkout@v6
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v6
         with:
           version: latest
       - uses: actions/setup-node@v6
         with:
           node-version: '24'
           registry-url: 'https://registry.npmjs.org'
-          cache: 'pnpm'
       - run: pnpm install --frozen-lockfile
       - run: pnpm publish --access public --no-git-checks
       # Publish to GitHub Packages
@@ -33,7 +32,6 @@ jobs:
         with:
           registry-url: 'https://npm.pkg.github.com'
           scope: '@cgoern'
-          cache: 'pnpm'
       - run: pnpm publish --no-git-checks
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
