@@ -1,6 +1,6 @@
 {
   "name": "@cgoern/lib-colors",
-  "version": "1.0.1",
+  "version": "1.0.0",
   "description": "Color tooling and core colors library.",
   "license": "MIT",
   "author": "cgoern",
@@ -28,7 +28,7 @@
     "singleQuote": true
   },
   "devDependencies": {
-    "prettier": "^3.8.1",
-    "sass": "^1.97.3"
+    "prettier": "^3.8.3",
+    "sass": "^1.99.0"
   }
 }
