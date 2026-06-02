@@ -27,11 +27,6 @@
     "semi": false,
     "singleQuote": true
   },
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "@parcel/watcher"
-    ]
-  },
   "devDependencies": {
     "prettier": "^3.8.3",
     "sass": "^1.99.0"
